@@ -8,14 +8,36 @@ public class BacktrackingBTree<T extends Comparable<T>> extends BTree<T> {
 		if ( !added.isEmpty() ){
 			T value = added.removeFirst();
 			int number = numOfSplited.removeFirst();
-			T[] toBeMergeArray = (T[]) new Object[number];
+			Node<T>[] toBeMergeArray = new Node[number]; //
 			for (int i=0; i<number; i++){
 				toBeMergeArray[i] = splited.removeFirst();
 			}
-			// remove(Value); //Todo: add a method remove to BacktrackBTree
-
+			Node<T> current = root;
+			while ( current.indexOf(value) != -1 ){ //searching the node we need to remove from
+				int index = getValuePosition(value, current);
+				current = current.getChild(index);
+			}
+			current.removeKey(value);
 		}
     }
+
+    private void BacktrackSplit(Node<T> toSplit, T median, boolean isLeftChild){
+
+	}
+
+	private int getValuePosition (T value, Node node) {
+		boolean found = false;
+		int i=0;
+		while(i < node.getNumberOfKeys() && !found) {
+			if(value.compareTo((T) node.getKey(i)) <= 0){
+				found = true;
+			} else {
+				i++;
+			}
+		}
+
+		return i;
+	}
 	
 	//Change the list returned to a list of integers answering the requirements
 	public static List<Integer> BTreeBacktrackingCounterExample(){
