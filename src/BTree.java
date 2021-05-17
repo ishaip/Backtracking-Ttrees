@@ -1,3 +1,4 @@
+import java.util.ArrayDeque;
 import java.util.Arrays;
 import java.util.Comparator;
 
@@ -11,6 +12,9 @@ public class BTree<T extends Comparable<T>> {
     protected int size = 0;
     
     //You may add fields here.
+    protected ArrayDeque<T> added;
+    protected ArrayDeque<Integer> numOfSplited;
+    protected ArrayDeque<T> splited;
 
     /**
      * Default Constructor for a 2-3 B-Tree.
@@ -35,13 +39,14 @@ public class BTree<T extends Comparable<T>> {
     }
 
     //You may add line of code to the "insert" function below.
+
     /**
      * Insert the value into this BTree
      * 
      * @param value - the inserted value
      */
     public void insert(T value) {
-    	
+    	int counter = 0;                    // counting splitting nodes
         if (root == null) {
             root = new Node<T>(null, maxDegree);
             root.addKey(value);
@@ -54,7 +59,10 @@ public class BTree<T extends Comparable<T>> {
                 if (currentNode.getNumberOfKeys() == maxDegree - 1) {
                 	
                 	split(currentNode);
-                	
+                	int medianIndex = currentNode.getNumberOfKeys() / 2;
+                	splited.addFirst(currentNode.getKey(medianIndex));
+                    counter = counter + 1; //
+
                 	// Return to the parent and descend to the needed node
                 	currentNode = currentNode.parent != null ? currentNode.parent : root;
                     int idx = currentNode.getValuePosition(value);
@@ -73,7 +81,8 @@ public class BTree<T extends Comparable<T>> {
         }
 
         size++;
-        
+        numOfSplited.addFirst(counter); //
+        added.addFirst(value);
     }
     
     /**

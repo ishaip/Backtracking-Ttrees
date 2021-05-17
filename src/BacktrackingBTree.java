@@ -5,19 +5,27 @@ public class BacktrackingBTree<T extends Comparable<T>> extends BTree<T> {
 
 	//You are to implement the function Backtrack.
 	public void Backtrack() {
-	    IntegrityStatement.signature(); // Reminder!
-		T[] arr = (T[]) new Object[5];
-	}
+		if ( !added.isEmpty() ){
+			T value = added.removeFirst();
+			int number = numOfSplited.removeFirst();
+			T[] toBeMergeArray = (T[]) new Object[number];
+			for (int i=0; i<number; i++){
+				toBeMergeArray[i] = splited.removeFirst();
+			}
+			// remove(Value); //Todo: add a method remove to BacktrackBTree
+
+		}
+    }
 	
 	//Change the list returned to a list of integers answering the requirements
 	public static List<Integer> BTreeBacktrackingCounterExample(){
-		LinkedList<Integer> output = new LinkedList<Integer>();
-		output.addLast(3);
-		output.addLast(4);
-		output.addLast(6);
-		output.addLast(8);
-		output.addLast(9);
-		output.addLast(7);
-		return output;
+		LinkedList<Integer> ans = new LinkedList<Integer>();
+		ans.addLast(3);
+		ans.addLast(4);
+		ans.addLast(6);
+		ans.addLast(8);
+		ans.addLast(9);
+		ans.addLast(7);
+		return ans;
 	}
 }
