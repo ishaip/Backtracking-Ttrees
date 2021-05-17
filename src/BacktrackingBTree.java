@@ -13,11 +13,15 @@ public class BacktrackingBTree<T extends Comparable<T>> extends BTree<T> {
 				toBeMergeArray[i] = splited.removeFirst();
 			}
 			Node<T> current = root;
-			int medianIndex = toBeMergeArray[number - 1].numOfKeys/2;
-			T medianValue =  toBeMergeArray[number - 1].getKey(medianIndex);
+			int medianIndex = -1;
+			T medianValue = null;
+			if (number !=0) {
+				medianIndex = toBeMergeArray[number - 1].numOfKeys / 2;
+				medianValue = toBeMergeArray[number - 1].getKey(medianIndex);
+			}
 			int counter = 2;
-			while(current.indexOf(value) != 1){
-				if( current.indexOf(medianValue) == -1) {
+			while(current.indexOf(value) != -1){
+				if(!(number == counter - 2) && current.indexOf(medianValue) == -1) {
 					BacktrackSplit(current, toBeMergeArray[number - counter + 1],medianValue);
 					medianIndex = toBeMergeArray[number - counter].numOfKeys/2;
 					medianValue =  toBeMergeArray[number - counter].getKey(medianIndex);
@@ -27,6 +31,10 @@ public class BacktrackingBTree<T extends Comparable<T>> extends BTree<T> {
 				current = current.getChild(index);
 			}
 			current.removeKey(value);
+			current.removeChild(current.indexOf(value));
+			System.out.println(current);
+
+			System.out.println(value);
 		}
     }
 
