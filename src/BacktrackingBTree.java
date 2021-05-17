@@ -8,14 +8,51 @@ public class BacktrackingBTree<T extends Comparable<T>> extends BTree<T> {
 		if ( !added.isEmpty() ){
 			T value = added.removeFirst();
 			int number = numOfSplited.removeFirst();
-			T[] toBeMergeArray = (T[]) new Object[number];
+			Node<T>[] toBeMergeArray = new Node[number];
 			for (int i=0; i<number; i++){
 				toBeMergeArray[i] = splited.removeFirst();
 			}
-			// remove(Value); //Todo: add a method remove to BacktrackBTree
-
+			Node<T> current = root;
+			int medianIndex = toBeMergeArray[number - 1].numOfKeys/2;
+			T medianValue =  toBeMergeArray[number - 1].getKey(medianIndex);
+			int counter = 2;
+			while(current.indexOf(value) != 1){
+				if( current.indexOf(medianValue) == -1) {
+					BacktrackSplit(current, toBeMergeArray[number - counter + 1],medianValue);
+					medianIndex = toBeMergeArray[number - counter].numOfKeys/2;
+					medianValue =  toBeMergeArray[number - counter].getKey(medianIndex);
+					counter = counter + 1;
+				}
+				int index = getValuePosition(value, current);
+				current = current.getChild(index);
+			}
+			current.removeKey(value);
 		}
     }
+
+
+	private int getValuePosition(T value, Node node) {
+		boolean found = false;
+		int i = 0;
+
+		while(i < node.getNumberOfKeys() && !found) {
+			if(value.compareTo((T) node.getKey(i)) <= 0){
+				found = true;
+			} else {
+				i++;
+			}
+		}
+
+		return i;
+	}
+
+    private void BacktrackSplit(Node<T> parent,Node<T> splitted , T median){
+		int index = parent.indexOf(median);
+		parent.removeChild(index);
+		parent.removeChild(index + 1);
+		parent.removeKey(median);
+		parent.addChild(splitted);
+	}
 	
 	//Change the list returned to a list of integers answering the requirements
 	public static List<Integer> BTreeBacktrackingCounterExample(){

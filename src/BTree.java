@@ -14,7 +14,7 @@ public class BTree<T extends Comparable<T>> {
     //You may add fields here.
     protected ArrayDeque<T> added;
     protected ArrayDeque<Integer> numOfSplited;
-    protected ArrayDeque<T> splited;
+    protected ArrayDeque<Node> splited;
 
     /**
      * Default Constructor for a 2-3 B-Tree.
@@ -57,10 +57,8 @@ public class BTree<T extends Comparable<T>> {
             	
             	// If the node has 2t-1 keys then split it
                 if (currentNode.getNumberOfKeys() == maxDegree - 1) {
-                	
+                	splited.addFirst(currentNode);
                 	split(currentNode);
-                	int medianIndex = currentNode.getNumberOfKeys() / 2;
-                	splited.addFirst(currentNode.getKey(medianIndex));
                     counter = counter + 1; //
 
                 	// Return to the parent and descend to the needed node
