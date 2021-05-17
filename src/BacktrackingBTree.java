@@ -7,18 +7,22 @@ public class BacktrackingBTree<T extends Comparable<T>> extends BTree<T> {
 	public void Backtrack() {
 		if ( !added.isEmpty() ){
 			T value = added.removeFirst();
-			int number = numOfSplited.removeFirst();
-			Node<T>[] toBeMergeArray = new Node[number]; //
-			for (int i=0; i<number; i++){
+			Node<T> curr = getNode(value); // searching the node which we remove from
+			curr.removeKey(value); // removing the key we need so
+
+			int number = numOfSplited.removeFirst(); // the number of nodes that were splitted under the insertion
+			Node<T>[] toBeMergeArray = new Node[number]; // initializing an array of all the nodes we have to remerge
+			for (int i=0; i<number; i++){ // removing the nodes above from the deque
 				toBeMergeArray[i] = splited.removeFirst();
 			}
+
 			Node<T> current = root;
-			int medianIndex = toBeMergeArray[number - 1].numOfKeys / 2;
-			T medianValue = toBeMergeArray[number - 1].getKey(medianIndex);
+			int medianIndex = toBeMergeArray[number - 1].numOfKeys / 2; // the index of the middle of the first node we need to merge
+			T medianValue = toBeMergeArray[number - 1].getKey(medianIndex); // the value(key) of the middle of the first node we need to merge
 			int counter = 2;
-			while ( current.indexOf(value) != -1 ){ //searching the node we need to remove from
-				if ( current.indexOf(medianValue) == -1 ){
-					BacktrackSplit(current, medianValue);
+			while ( current.indexOf(value) == -1 ){ // iterating untill we get to node we removed the key from
+				if ( current.indexOf(medianValue) != -1 ){ //
+					BacktrackSplit(current, toBeMergeArray[number - counter + 1], medianValue);
 					medianIndex = toBeMergeArray[number - counter + 1].numOfKeys / 2;
 					medianValue = toBeMergeArray[number - counter].getKey(medianIndex);
 					counter = counter + 1;
@@ -26,13 +30,14 @@ public class BacktrackingBTree<T extends Comparable<T>> extends BTree<T> {
 				int index = getValuePosition(value, current);
 				current = current.getChild(index);
 			}
-			current.removeKey(value);
 		}
     }
 
-    private void BacktrackSplit(Node<T> parent, Node<T> splitted, T median){ //merge again a splitted node
+    private void BacktrackSplit(Node<T> parent, Node<T> splitted, T median){ // merge again a splitted node
 		int index = parent.indexOf(median);
-		parent.removeChild(index);
+		if ( index >= 0 ){
+			parent.removeChild(index);
+		}
 		parent.removeChild(index + 1);
 		parent.removeKey(median);
 		parent.addChild(splitted);
