@@ -20,9 +20,10 @@ public class BacktrackingBTree<T extends Comparable<T>> extends BTree<T> {
 			int medianIndex = toBeMergeArray[number - 1].numOfKeys / 2; // the index of the middle of the first node we need to merge
 			T medianValue = toBeMergeArray[number - 1].getKey(medianIndex); // the value(key) of the middle of the first node we need to merge
 			int counter = 2;
-			while ( current.indexOf(value) == -1 ){ // iterating untill we get to node we removed the key from
-				if ( current.indexOf(medianValue) != -1 ){ //
-					BacktrackSplit(current, toBeMergeArray[number - counter + 1], medianValue);
+
+			while ( current != null && current.indexOf(value) == -1 ){ // iterating until we get to node we removed the key from
+				if ( number >= counter && current.indexOf(medianValue) != -1 ){ // it means that 'current' is a node that should be remerged
+					BacktrackSplit(current, toBeMergeArray[number - counter + 1], medianValue); // adding break condition if 'number-counter' < -1 ??
 					medianIndex = toBeMergeArray[number - counter + 1].numOfKeys / 2;
 					medianValue = toBeMergeArray[number - counter].getKey(medianIndex);
 					counter = counter + 1;
@@ -35,7 +36,7 @@ public class BacktrackingBTree<T extends Comparable<T>> extends BTree<T> {
 
     private void BacktrackSplit(Node<T> parent, Node<T> splitted, T median){ // merge again a splitted node
 		int index = parent.indexOf(median);
-		if ( index >= 0 ){
+		if ( index >= 0 ){ // to be sure that we don't call to a negative index
 			parent.removeChild(index);
 		}
 		parent.removeChild(index + 1);
