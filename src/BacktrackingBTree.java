@@ -15,26 +15,23 @@ public class BacktrackingBTree<T extends Comparable<T>> extends BTree<T> {
 			Node<T> current = root;
 			int medianIndex = -1;
 			T medianValue = null;
-			if (number !=0) {
-				medianIndex = toBeMergeArray[number - 1].numOfKeys / 2;
-				medianValue = toBeMergeArray[number - 1].getKey(medianIndex);
+			int counter = 1;
+			if(number !=0 ){
+				medianIndex = toBeMergeArray[number - counter].numOfKeys/2;
+				medianValue =  toBeMergeArray[number - counter].getKey(medianIndex);
 			}
-			int counter = 2;
-			while(current.indexOf(value) != -1){
-				if(!(number == counter - 2) && current.indexOf(medianValue) == -1) {
-					BacktrackSplit(current, toBeMergeArray[number - counter + 1],medianValue);
+			while(current != null && current.indexOf(value) == -1 ){
+				if(!(number == counter -1) && current.indexOf(medianValue) != -1) {
 					medianIndex = toBeMergeArray[number - counter].numOfKeys/2;
 					medianValue =  toBeMergeArray[number - counter].getKey(medianIndex);
+					BacktrackSplit(current, toBeMergeArray[number - counter],medianValue);
 					counter = counter + 1;
 				}
 				int index = getValuePosition(value, current);
 				current = current.getChild(index);
 			}
-			current.removeKey(value);
-			current.removeChild(current.indexOf(value));
-			System.out.println(current);
-
-			System.out.println(value);
+			if (current != null && getValuePosition(value, current) != -1)
+				current.removeKey(value);
 		}
     }
 
@@ -56,10 +53,20 @@ public class BacktrackingBTree<T extends Comparable<T>> extends BTree<T> {
 
     private void BacktrackSplit(Node<T> parent,Node<T> splitted , T median){
 		int index = parent.indexOf(median);
+
 		parent.removeChild(index);
-		parent.removeChild(index + 1);
+		parent.removeChild(index);
 		parent.removeKey(median);
 		parent.addChild(splitted);
+		if (root.numOfKeys == 0)
+			root =splitted;
+	}
+
+	public String NodeToString(Node node) {
+	String str = "";
+	for (int i = 0; i < node.numOfKeys; i++)
+		str = str + " " + node.getKey(i).toString();
+	return str;
 	}
 	
 	//Change the list returned to a list of integers answering the requirements
@@ -73,4 +80,5 @@ public class BacktrackingBTree<T extends Comparable<T>> extends BTree<T> {
 		ans.addLast(7);
 		return ans;
 	}
+
 }
