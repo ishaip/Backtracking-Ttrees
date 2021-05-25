@@ -1,8 +1,4 @@
-import java.util.List;
-import java.util.NoSuchElementException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Iterator;
+import java.util.*;
 
 public class AVLTree implements Iterable<Integer> {
     protected class Node {
@@ -19,23 +15,34 @@ public class AVLTree implements Iterable<Integer> {
     
     protected Node root;
     
-    //You may add fields here.
-    
+    protected ArrayDeque<Integer> nodeAdded = new ArrayDeque<Integer>();
+    protected ArrayDeque<Integer> rotationKind = new ArrayDeque<Integer>();
+    protected ArrayDeque<Integer> nodeRotated = new ArrayDeque<Integer>();
+
+
     public AVLTree() {
     	this.root = null;
     }
     
     //You may add lines of code to both "insert" and "insertNode" functions.
 	public void insert(int value) {
+        int temp = rotationKind.size();
     	root = insertNode(this.root,value);
+        nodeAdded.addFirst(value);
+        if (rotationKind.size() == temp) {        //if there were no rotations we will keep a value 0 in the rotation kind
+            rotationKind.addFirst(0);
+            nodeRotated.addFirst(0);
+        }
     }
 	
 	protected Node insertNode(Node node, int value) {
 		/* 1.  Perform the normal BST search and insert */
+        int rotationCounter = 0;
         if (node == null) {
         	Node inserted_node = new Node(value);
             return inserted_node;
         }
+
 
         if (value < node.value) {
             node.left  = insertNode(node.left, value);
@@ -59,18 +66,28 @@ public class AVLTree implements Iterable<Integer> {
         // Left Cases            
         if (balance > 1) {
             if (value > node.left.value) {
+                rotationCounter = rotationCounter +1;
                 node.left = leftRotate(node.left);
             }
             
             node = rightRotate(node);
+            nodeRotated.addFirst(node.value);
+            rotationCounter = rotationCounter +1;
+            rotationKind.addFirst(rotationCounter);
         }
+
         // Right Cases
         else if (balance < -1) {
             if (value < node.right.value) {
                 node.right = rightRotate(node.right);
+                rotationCounter = rotationCounter -1;
+
             }
             
             node = leftRotate(node);
+            nodeRotated.addFirst(node.value);
+            rotationCounter = rotationCounter -1;
+            rotationKind.addFirst(rotationCounter);
         }
 
         return node;
