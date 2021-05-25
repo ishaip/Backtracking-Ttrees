@@ -63,10 +63,6 @@ public class BacktrackingAVL extends AVLTree {
 
         return node;
     }
-
-    public enum rotationCases {
-        LEFTLEFT, LEFTRIGHT, RIGHTRIGHT, RIGHTLEFT;
-    }
     
     //Change the list returned to a list of integers answering the requirements
     public static List<Integer> AVLTreeBacktrackingCounterExample(){
