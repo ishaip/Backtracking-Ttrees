@@ -1,8 +1,4 @@
-import java.util.List;
-import java.util.NoSuchElementException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Iterator;
+import java.util.*;
 
 public class AVLTree implements Iterable<Integer> {
     protected class Node {
@@ -20,6 +16,9 @@ public class AVLTree implements Iterable<Integer> {
     protected Node root;
     
     //You may add fields here.
+    protected ArrayDeque<Integer> nodeAdded = new ArrayDeque<Integer>();
+    protected ArrayDeque<Integer> rotationKind = new ArrayDeque<Integer>();
+    protected ArrayDeque<Integer> nodeRotated = new ArrayDeque<Integer>();
     
     public AVLTree() {
     	this.root = null;
@@ -27,11 +26,18 @@ public class AVLTree implements Iterable<Integer> {
     
     //You may add lines of code to both "insert" and "insertNode" functions.
 	public void insert(int value) {
-    	root = insertNode(this.root,value);
+        int temp = rotationKind.size();
+        root = insertNode(this.root,value);
+        nodeAdded.addFirst(value);
+        if ( temp == rotationKind.size() ) {
+            rotationKind.addFirst(0); //if there weren't rotation we wish to keep 0 that means that there weren't any rotation
+            nodeRotated.addFirst(0);
+        }
     }
 	
 	protected Node insertNode(Node node, int value) {
 		/* 1.  Perform the normal BST search and insert */
+        int rotationCounter = 0;
         if (node == null) {
         	Node inserted_node = new Node(value);
             return inserted_node;
@@ -59,17 +65,25 @@ public class AVLTree implements Iterable<Integer> {
         // Left Cases            
         if (balance > 1) {
             if (value > node.left.value) {
-                node.left = leftRotate(node.left);
+                rotationCounter = rotationCounter + 1;
+                node.left = leftRotate(node.left); //left-right (rotationKind = 2)
             }
-            
-            node = rightRotate(node);
+            rotationCounter = rotationCounter + 1;
+            node = rightRotate(node); //left-left (rotationKind = 1)
+            nodeRotated.addFirst(node.value);
+            rotationKind.addFirst(rotationCounter);
+
         } // Right Cases
         else if (balance < -1) {
             if (value < node.right.value) {
-                node.right = rightRotate(node.right);
+                rotationCounter = rotationCounter - 1;
+                node.right = rightRotate(node.right); //right-left (rotationKind = -2)
             }
-            
-            node = leftRotate(node);
+
+            node = leftRotate(node); //right-right (rotationKind = -1)
+            nodeRotated.addFirst(node.value);
+            rotationCounter = rotationCounter - 1;
+            rotationKind.addFirst(rotationCounter);
         }
 
         return node;

@@ -7,8 +7,7 @@ public class BacktrackingBTree<T extends Comparable<T>> extends BTree<T> {
 	public void Backtrack() {
 		if ( !added.isEmpty() ){
 			T value = added.removeFirst();
-			Node<T> curr = getNode(value); // searching the node which we remove from
-			curr.removeKey(value); // removing the key we need so
+			Node<T> valNode = getNode(value); // searching the node which we remove from
 
 			int number = numOfSplited.removeFirst(); // the number of nodes that were splitted under the insertion
 			Node<T>[] toBeMergeArray = new Node[number]; // initializing an array of all the nodes we have to remerge
@@ -21,9 +20,9 @@ public class BacktrackingBTree<T extends Comparable<T>> extends BTree<T> {
 			T medianValue = toBeMergeArray[number - 1].getKey(medianIndex); // the value(key) of the middle of the first node we need to merge
 			int counter = 2;
 
-			while ( current != null && current.indexOf(value) == -1 ){ // iterating until we get to node we removed the key from
+			while ( current != null && (current.equals(root) || !current.parent.equals(valNode)) ){ // iterating until we get to node we remove the key from
 				if ( number >= counter && current.indexOf(medianValue) != -1 ){ // it means that 'current' is a node that should be remerged
-					BacktrackSplit(current, toBeMergeArray[number - counter + 1], medianValue); // adding break condition if 'number-counter' < -1 ??
+					BacktrackSplit(current, toBeMergeArray[number - counter + 1], medianValue);
 					medianIndex = toBeMergeArray[number - counter + 1].numOfKeys / 2;
 					medianValue = toBeMergeArray[number - counter].getKey(medianIndex);
 					counter = counter + 1;
@@ -31,17 +30,20 @@ public class BacktrackingBTree<T extends Comparable<T>> extends BTree<T> {
 				int index = getValuePosition(value, current);
 				current = current.getChild(index);
 			}
+			valNode.removeKey(value); // removing the key we need so
 		}
     }
 
     private void BacktrackSplit(Node<T> parent, Node<T> splitted, T median){ // merge again a splitted node
 		int index = parent.indexOf(median);
-		if ( index >= 0 ){ // to be sure that we don't call to a negative index
-			parent.removeChild(index);
-		}
-		parent.removeChild(index + 1);
+
+		parent.removeChild(index);
+		parent.removeChild(index);
 		parent.removeKey(median);
 		parent.addChild(splitted);
+
+		if ( root.numOfKeys == 0 )
+			root = splitted;
 	}
 
 	private int getValuePosition (T value, Node node) {
