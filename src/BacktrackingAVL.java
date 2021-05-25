@@ -11,7 +11,7 @@ public class BacktrackingAVL extends AVLTree {
 
     public Node Backtrack(int valueToRemove, int valueRotated, int rotationKind, Node node) {
         if (valueToRemove == node.value) {
-            System.out.println(nodeAdded.size()+" " + nodeRotated.size() +" " + this.rotationKind.size());
+            //System.out.println(nodeAdded.size()+" " + nodeRotated.size() +" " + this.rotationKind.size());
             if (node.parent.left == node)
                 node.parent.left = null;
             else
@@ -34,30 +34,50 @@ public class BacktrackingAVL extends AVLTree {
             node.height = Math.max(getNodeHeight(node.left), getNodeHeight(node.right)) + 1;
 
             if (rotationKind != 0 && node.value == valueRotated) {
-
-                // were Left Cases
+                // back from Left Cases
                 if (rotationKind > 0) {
-                    if (valueToRemove > node.left.value) {
+                    if(node == root)
+                        root = leftRotate(node);
+                    else
+                        node = leftRotate(node);
+                    if (rotationKind == 2) {
                         node.left = rightRotate(node.left);
                     }
-                    System.out.println(node.value + " am here");
-                    node.right = leftRotate(node.right);
                 }
-
-
-                // Right Cases
-                else if (rotationKind > 0) {
-                    if (valueToRemove < node.right.value) {
+                // back from Right Cases
+                else {
+                    if(node == root)
+                        root = rightRotate(node);
+                    else
+                        node = rightRotate(node);
+                    if (rotationKind  == -2) {
                         node.right = leftRotate(node.right);
-
                     }
-                    System.out.println(node.value + " am here");
-                    node = rightRotate(node);
                 }
             }
         }
         return node;
     }
+
+    public Node BRightRotate(Node y){
+        Node x = y.left;
+        Node T2 = x.right;
+
+        // Perform rotation
+        x.right = y;
+        y.left = T2;
+
+        //Update parents
+        if(T2 != null) {
+            T2.parent = y;
+        }
+
+        x.parent = y.parent;
+        y.parent = x;
+        // Return new root
+        return x;
+    }
+
 
     public Node Serch(int value){
         Node current = this.root;
