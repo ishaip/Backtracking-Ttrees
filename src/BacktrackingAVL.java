@@ -5,21 +5,40 @@ public class BacktrackingAVL extends AVLTree {
 	//You are to implement the function Backtrack.
     public void Backtrack() {
         if(!nodeAdded.isEmpty()){
-            Backtrack(nodeAdded.removeFirst(), nodeRotated.removeFirst(), rotationKind.removeFirst(), root);
+            int nodeToRemove = nodeAdded.removeFirst();
+            if (!nodeAdded.isEmpty()) {
+                if (rotationKind.getFirst() != 0)
+                    Backtrack(nodeToRemove, nodeRotated.removeFirst(), rotationKind.removeFirst(), root);
+                remove(nodeToRemove, root);
+            }
+            else
+                root = null;
         }
     }
 
-    public Node Backtrack(int valueToRemove, int valueRotated, int rotationKind, Node node) {
+    private void remove (int valueToRemove, Node node){
         if (valueToRemove == node.value) {
-            //System.out.println(nodeAdded.size()+" " + nodeRotated.size() +" " + this.rotationKind.size());
             if (node.parent.left == node)
                 node.parent.left = null;
             else
-                node.right = null;
-            return null;
+                node.parent.right = null;
         }
-
         else {
+            if (valueToRemove < node.value) {
+                if (node.left != null)
+                    remove(valueToRemove, node.left);
+            }
+            else {
+                if (node.right != null)
+                    remove(valueToRemove, node.right);
+            }
+        }
+        node.height = Math.max(getNodeHeight(node.left), getNodeHeight(node.right)) + 1;
+    }
+
+    private Node Backtrack(int valueToRemove, int valueRotated, int rotationKind, Node node) {
+            if (node == null)
+                return null;
             if (valueToRemove < node.value) {
                 node.left = Backtrack(valueToRemove, valueRotated, rotationKind, node.left);
                 if (node.left != null)
@@ -55,7 +74,7 @@ public class BacktrackingAVL extends AVLTree {
                     }
                 }
             }
-        }
+
         return node;
     }
 

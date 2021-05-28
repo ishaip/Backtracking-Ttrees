@@ -81,7 +81,6 @@ public class AVLTree implements Iterable<Integer> {
             if (value < node.right.value) {
                 node.right = rightRotate(node.right);
                 rotationCounter = rotationCounter -1;
-
             }
             
             node = leftRotate(node);
