@@ -38,6 +38,9 @@ public class AVLTree implements Iterable<Integer> {
 	protected Node insertNode(Node node, int value) {
 		/* 1.  Perform the normal BST search and insert */
         int rotationCounter = 0;
+        // counts how many rotations were there
+        // positive numbers are for left rotation and negative for right
+        // and zero for no rotations
         if (node == null) {
         	Node inserted_node = new Node(value);
             return inserted_node;
