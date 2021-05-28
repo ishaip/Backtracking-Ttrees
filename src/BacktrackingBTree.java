@@ -35,11 +35,10 @@ public class BacktrackingBTree<T extends Comparable<T>> extends BTree<T> {
 		}
     }
 
-
+    //very similar to the one in the original BTree
 	private int getValuePosition(T value, Node node) {
 		boolean found = false;
 		int i = 0;
-
 		while(i < node.getNumberOfKeys() && !found) {
 			if(value.compareTo((T) node.getKey(i)) <= 0){
 				found = true;
@@ -47,26 +46,18 @@ public class BacktrackingBTree<T extends Comparable<T>> extends BTree<T> {
 				i++;
 			}
 		}
-
 		return i;
 	}
 
+	// a backtrack from a split
     private void BacktrackSplit(Node<T> parent,Node<T> splitted , T median){
 		int index = parent.indexOf(median);
-
 		parent.removeChild(index);
 		parent.removeChild(index);
 		parent.removeKey(median);
 		parent.addChild(splitted);
-		if (root.numOfKeys == 0)
+		if (root.numOfKeys == 0)		//if we splitted the root
 			root =splitted;
-	}
-
-	public String NodeToString(Node node) {
-	String str = "";
-	for (int i = 0; i < node.numOfKeys; i++)
-		str = str + " " + node.getKey(i).toString();
-	return str;
 	}
 	
 	//Change the list returned to a list of integers answering the requirements

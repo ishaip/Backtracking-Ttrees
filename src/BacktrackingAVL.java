@@ -8,9 +8,11 @@ public class BacktrackingAVL extends AVLTree {
     public void Backtrack() {
         if(!nodeAdded.isEmpty()){       //if there were no Nodes added
             int nodeToRemove = nodeAdded.removeFirst();
+            int valueRotated = nodeRotated.removeFirst();
+            int rotationValue = rotationKind.removeFirst();
             if (!nodeAdded.isEmpty()) {  //if the only thing added was the root
-                if (rotationKind.getFirst() != 0)       //if there wer no rotaions the only thing needed is to remove a node
-                    Backtrack(nodeToRemove, nodeRotated.removeFirst(), rotationKind.removeFirst(), root);
+                if (rotationValue != 0)       //if there wer no rotaions the only thing needed is to remove a node
+                    Backtrack(nodeToRemove, valueRotated, rotationValue, root);
                 remove(nodeToRemove, root);
             }
             else
@@ -89,6 +91,5 @@ public class BacktrackingAVL extends AVLTree {
         ans.add(2);
         ans.add(3);
         return ans;
-
     }
 }
