@@ -157,7 +157,7 @@ public class BTree<T extends Comparable<T>> {
         
         while (node != null && !found) {
             int idx = node.getValuePosition(value);
-            if (idx < node.getNumberOfKeys() && node.getKey(idx) == value) {
+            if (idx < node.getNumberOfKeys() && node.getKey(idx).compareTo(value) == 0) {
                 found = true;
             } else if (!node.isLeaf()){
                 node = node.getChild(idx);
