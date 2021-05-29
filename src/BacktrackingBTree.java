@@ -5,7 +5,7 @@ public class BacktrackingBTree<T extends Comparable<T>> extends BTree<T> {
 
 	//You are to implement the function Backtrack.
 	public void Backtrack() {
-		if ( !added.isEmpty() ){
+		if ( !added.isEmpty() ){		//there were no inserts
 			T value = added.removeFirst();
 			int number = numOfSplited.removeFirst();
 			Node<T>[] toBeMergeArray = new Node[number];
@@ -15,23 +15,23 @@ public class BacktrackingBTree<T extends Comparable<T>> extends BTree<T> {
 			Node<T> current = root;
 			int medianIndex = -1;
 			T medianValue = null;
-			int counter = 1;
+			int counter = 1;		//start with defult values
 			if(number !=0 ){
 				medianIndex = toBeMergeArray[number - counter].numOfKeys/2;
-				medianValue =  toBeMergeArray[number - counter].getKey(medianIndex);
+				medianValue =  toBeMergeArray[number - counter].getKey(medianIndex);		//if there are nodes to merge
 			}
 			while(current != null && current.indexOf(value) == -1 ){
-				if(!(number == counter -1) && current.indexOf(medianValue) != -1) {
+				if(!(number == counter -1) && current.indexOf(medianValue) != -1) {			//will happen if the node was splitted
 					medianIndex = toBeMergeArray[number - counter].numOfKeys/2;
 					medianValue =  toBeMergeArray[number - counter].getKey(medianIndex);
 					BacktrackSplit(current, toBeMergeArray[number - counter],medianValue);
-					counter = counter + 1;
+					counter = counter + 1;													//start searching for the next split
 				}
 				int index = getValuePosition(value, current);
 				current = current.getChild(index);
 			}
 			if (current != null && getValuePosition(value, current) != -1)
-				current.removeKey(value);
+				current.removeKey(value);													// remove the value that was inserted
 		}
     }
 

@@ -12,9 +12,9 @@ public class BTree<T extends Comparable<T>> {
     protected int size = 0;
     
     //You may add fields here.
-    protected ArrayDeque<T> added= new ArrayDeque<T>();
-    protected ArrayDeque<Integer> numOfSplited = new ArrayDeque<Integer>();
-    protected ArrayDeque<Node> splited = new ArrayDeque<Node>();
+    protected ArrayDeque<T> added= new ArrayDeque<T>();     //what value was added in the insert
+    protected ArrayDeque<Integer> numOfSplited = new ArrayDeque<Integer>();     //number of nodes splittes during each insert
+    protected ArrayDeque<Node> splited = new ArrayDeque<Node>();        //to remember how the ode was before the split
 
     /**
      * Default Constructor for a 2-3 B-Tree.
